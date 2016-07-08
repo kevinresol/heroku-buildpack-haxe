@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Valid for all apps
+echo "Haxe"
+exit 0

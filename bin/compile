@@ -1,0 +1,78 @@
+#!/bin/sh
+
+BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
+ENV_DIR=${3:-}
+BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
+
+indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+arrow() {
+  c='s/^/-----> /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+# export HAXEVER and NEKOVER
+if [ -d "$ENV_DIR" ]; then
+  for e in $(ls $ENV_DIR); do
+    echo "$e" | grep -E "^(HAXEVER|NEKOVER)$" &&
+    export "$e=$(cat $ENV_DIR/$e)"
+    :
+  done
+fi
+
+if [ -z $HAXEVER ]; then
+  echo "HAXEVER was not specified. Using 3.3.0-rc.1" | indent
+  HAXEVER=3.3.0-rc.1
+else
+  echo "HAXEVER is $HAXEVER" | indent
+fi
+
+if [ -z $NEKOVER ]; then
+  echo "NEKOVER was not specified. Using 2.1.0" | indent
+  NEKOVER=2.1.0
+else
+  echo "NEKOVER is $NEKOVER" | indent
+fi
+
+VENDOR_DIR=$BUILD_DIR/vendor
+mkdir -p $VENDOR_DIR
+
+HAXEPATH=$VENDOR_DIR/haxe
+HAXE_STD_PATH=$VENDOR_DIR/haxe/std
+NEKOPATH=$VENDOR_DIR/neko
+LD_LIBRARY_PATH=$VENDOR_DIR/neko
+PATH=$VENDOR_DIR/haxe:$VENDOR_DIR/neko:$PATH
+HAXEFILE=haxe-$HAXEVER-linux64.tar.gz
+NEKOFILE=neko-$NEKOVER-linux64.tar.gz
+HAXEURL=http://haxe.org/website-content/downloads/$HAXEVER/downloads/$HAXEFILE
+NEKOURL=http://nekovm.org/media/$NEKOFILE
+mkdir -p $NEKOPATH && mkdir -p $HAXEPATH
+
+echo "Downloading Neko $NEKOVER" | arrow
+wget $NEKOURL && tar xzf $NEKOFILE --strip=1 -C $NEKOPATH && rm $NEKOFILE
+
+echo "Downloading Haxe $HAXEVER" | arrow
+wget $HAXEURL && tar xzf $HAXEFILE --strip=1 -C $HAXEPATH && rm $HAXEFILE
+
+echo "Preparing Haxelib" | arrow
+mkdir $VENDOR_DIR/haxelib
+echo $VENDOR_DIR/haxelib > $VENDOR_DIR/.haxelib
+cp $VENDOR_DIR/.haxelib /etc/
+
+# output env
+echo "export PATH=$PATH" > $BP_DIR/export
+echo "export HAXEPATH=$HAXEPATH" >> $BP_DIR/export
+echo "export HAXE_STD_PATH=$HAXE_STD_PATH" >> $BP_DIR/export
+echo "export NEKOPATH=$NEKOPATH" >> $BP_DIR/export
+echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $BP_DIR/export
+
