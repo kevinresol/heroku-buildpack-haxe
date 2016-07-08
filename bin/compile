@@ -66,8 +66,8 @@ wget -q $HAXEURL && tar xzf $HAXEFILE --strip=1 -C $HAXEPATH && rm $HAXEFILE
 
 echo "Preparing Haxelib" | arrow
 mkdir $VENDOR_DIR/haxelib
-echo $VENDOR_DIR/haxelib > $VENDOR_DIR/.haxelib
-cp $VENDOR_DIR/.haxelib /etc/
+echo $VENDOR_DIR/haxelib > ~/.haxelib
+cp ~/.haxelib /etc/
 
 # output env
 echo "export PATH=$PATH" > $BP_DIR/export
