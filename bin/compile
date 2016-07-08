@@ -59,10 +59,10 @@ NEKOURL=http://nekovm.org/media/$NEKOFILE
 mkdir -p $NEKOPATH && mkdir -p $HAXEPATH
 
 echo "Downloading Neko $NEKOVER" | arrow
-wget $NEKOURL && tar xzf $NEKOFILE --strip=1 -C $NEKOPATH && rm $NEKOFILE
+wget -q $NEKOURL && tar xzf $NEKOFILE --strip=1 -C $NEKOPATH && rm $NEKOFILE
 
 echo "Downloading Haxe $HAXEVER" | arrow
-wget $HAXEURL && tar xzf $HAXEFILE --strip=1 -C $HAXEPATH && rm $HAXEFILE
+wget -q $HAXEURL && tar xzf $HAXEFILE --strip=1 -C $HAXEPATH && rm $HAXEFILE
 
 echo "Preparing Haxelib" | arrow
 mkdir $VENDOR_DIR/haxelib
