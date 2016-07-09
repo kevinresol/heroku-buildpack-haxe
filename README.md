@@ -10,11 +10,11 @@ Allows you to use the following commands in your scripts:
 
 Use config var `HAXEVER` and `NEKOVER` to specify the version of Haxe and Neko respectively.
 
-Currently, the defaults are 3.3.0-rc.1 and 2.1.0 respectively.
+Currently, the defaults are `3.3.0-rc.1` and `2.1.0` respectively.
 
 ### Example Usage
 
-The following demonstrate the use of the hooks in `package.json` to invoke a Haxe build for a NodeJS project:
+The following demonstrates the use of the hooks in `package.json` to invoke a Haxe build for a NodeJS project:
 
 0. Config the following buildpacks in heroku dashboard (or through command line)
 
